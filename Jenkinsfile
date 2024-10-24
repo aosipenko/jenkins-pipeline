@@ -19,7 +19,6 @@ pipeline {
                         // Add your build commands here, using the input version if needed
                         // Example: sh "mvn clean package -Dversion=${billAccountId}"
                     }
-                }
         }
     }
 }
