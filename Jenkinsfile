@@ -8,6 +8,22 @@ pipeline {
         stage('Build') {
                     steps {
                         script {
+                            def scenarioType = input message: 'Select bill account id',
+                                                                     parameters: [choice(choices: ['Bill Run', 'Payex Files'],
+                                                                     description: 'Please select the scenario you want to run',
+                                                                     name: 'BILL_SCENARIO')]
+
+                            switch (scenarioType){
+                                case "Bill Run":
+                                    echo 'Bill Run selected'
+                                break
+                                case "Payex Files":
+                                    echo 'Payex Selected selected'
+                                break
+                                default:
+                                    error "No scenario selected or unknown scenario type issued"
+                            }
+
                             def billAccountId = input message: 'Enter bill account id',
                                                  parameters: [string(defaultValue: '123456789',
                                                  description: 'Please enter the bill account id to run billing for',
