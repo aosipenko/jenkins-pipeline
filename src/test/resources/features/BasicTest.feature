@@ -9,6 +9,7 @@ Feature: My Feature
     When I use different test data "some test data"
     Then I print another test data piece "AAAA"
 
+  @otherTag
   Scenario Outline: Some Test Scenario
     Given I print "this is NOT my tag!" 1 times
     When I use different test data <test_data>
