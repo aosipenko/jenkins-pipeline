@@ -35,10 +35,10 @@ pipeline {
                         break
                         case "Payex Files":
                             echo 'Payex Selected selected'
-                            def billRunId = input message: 'Enter bill account id',
-                                                      parameters: [string(defaultValue: '123456789',
-                                                      description: 'Please enter the bill account id to run billing for',
-                                                      name: 'BILL_ACC_ID')]
+                            def billRunId = input message: 'Enter bill run id',
+                                                  parameters: [string(defaultValue: 'XXXXXXXXX',
+                                                  description: 'Please enter the bill run id to generate files for',
+                                                  name: 'BILL_RUN_ID')]
 
                             echo "Building version ${billRunId}"
                             sh "mvn clean test -Dtestng.suiteXmlFile=testng.xml -DbillRun=${billRunId}"
