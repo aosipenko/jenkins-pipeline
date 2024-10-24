@@ -4,6 +4,8 @@ pipeline {
     tools {
         maven 'maven 399' // Use the name of the Maven version configured in Jenkins
     }
+
+    def scencario = 'NONE';
     stages{
         stage('Build') {
                     steps {
@@ -12,8 +14,9 @@ pipeline {
                                                                      parameters: [choice(choices: ['Bill Run', 'Payex Files'],
                                                                      description: 'Please select the scenario you want to run',
                                                                      name: 'BILL_SCENARIO')]
+                            scenario = scenarioType;
 
-                            switch (scenarioType){
+                            switch (scenario){
                                 case "Bill Run":
                                     echo 'Bill Run selected'
                                 break
@@ -21,6 +24,7 @@ pipeline {
                                     echo 'Payex Selected selected'
                                 break
                                 default:
+                                    echo 'Selected scenario is: ' + scenario
                                     error "No scenario selected or unknown scenario type issued"
                             }
 
