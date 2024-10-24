@@ -1,18 +1,19 @@
 pipeline {
     stages{
-        stage('Bill Account Id') {
-            // Prompt the user for a text input
-            def billAccountId = input(
-                    id: 'billAccountId',
-                    message: 'Please enter your text:',
-                    parameters: [
-                            string(name: 'billAccountId', defaultValue: '', description: 'Enter BillAccount ID')
-                    ]
-            )
+        stage('Build') {
+                    steps {
+                        script {
+                            def userInput = input message: 'Enter the build version:',
+                                                 parameters: [string(defaultValue: '1.0.0',
+                                                 description: 'Please enter the version number for this build.',
+                                                 name: 'BUILD_VERSION')]
 
-            // Use the input value
-            echo "You entered: ${billAccountId}"
-        }
+                            echo "Building version ${userInput}"
+                        }
+                        // Add your build commands here, using the input version if needed
+                        // Example: sh "mvn clean package -Dversion=${userInput}"
+                    }
+                }
 
         stage('Do Something with Input 1') {
             steps{
