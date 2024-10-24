@@ -14,7 +14,8 @@ public class RestTests {
 
     @Test
     public void randomUserTest() {
-        System.out.println("Bill Account ID" + System.getProperty("type", "NONE"));
+        System.out.println("Scenario type " + System.getProperty("type", "NONE"));
+        System.out.println("Bill Account ID " + System.getProperty("billAccountId", "NONE"));
         RequestSpecification specification = RestAssured.given();
         specification.baseUri("https://randomuser.me/");
         specification.basePath("/api/");

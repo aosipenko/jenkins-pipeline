@@ -3,13 +3,14 @@ Feature: My Feature
   Background: do before each
     Given I print "======================================" 1 times
 
+  @myTag
   Scenario: Some Test Scenario
-    Given I print "my test string" 1 times
+    Given I print "This is MY TAG!" 1 times
     When I use different test data "some test data"
     Then I print another test data piece "AAAA"
 
   Scenario Outline: Some Test Scenario
-    Given I print "my test string" 1 times
+    Given I print "this is NOT my tag!" 1 times
     When I use different test data <test_data>
     Then I print another test data piece <another_test_data>
     Examples:
