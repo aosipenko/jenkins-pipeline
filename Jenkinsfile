@@ -8,15 +8,15 @@ pipeline {
         stage('Build') {
                     steps {
                         script {
-                            def userInput = input message: 'Enter the build version:',
-                                                 parameters: [string(defaultValue: '1.0.0',
-                                                 description: 'Please enter the version number for this build.',
-                                                 name: 'BUILD_VERSION')]
+                            def billAccountId = input message: 'Enter bill account id',
+                                                 parameters: [string(defaultValue: '123456789',
+                                                 description: 'Please enter the bill account id to run billing for',
+                                                 name: 'BILL_ACC_ID')]
 
-                            echo "Building version ${userInput}"
+                            echo "Building version ${billAccountId}"
                         }
                         // Add your build commands here, using the input version if needed
-                        // Example: sh "mvn clean package -Dversion=${userInput}"
+                        // Example: sh "mvn clean package -Dversion=${billAccountId}"
                     }
                 }
 
