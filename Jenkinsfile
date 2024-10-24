@@ -1,4 +1,6 @@
 pipeline {
+    agent any  // This specifies that Jenkins can run the pipeline on any available agent
+
     stages{
         stage('Build') {
                     steps {
