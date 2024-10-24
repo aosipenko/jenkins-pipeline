@@ -19,7 +19,7 @@ pipeline {
                         }
                     }
         };
-        stage('Select Scenario') {
+        stage('Scenario Parameters') {
             steps {
                 script {
                     switch (scenario){
