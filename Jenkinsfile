@@ -14,7 +14,7 @@ pipeline {
                                                  name: 'BILL_ACC_ID')]
 
                             echo "Building version ${billAccountId}"
-                            sh "mvn clean test -Dtype="${billAccountId}
+                            sh "mvn clean test -Dtype=${billAccountId}"
                         }
                         // Add your build commands here, using the input version if needed
                         // Example: sh "mvn clean package -Dversion=${billAccountId}"
