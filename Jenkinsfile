@@ -1,6 +1,9 @@
 pipeline {
     agent any  // This specifies that Jenkins can run the pipeline on any available agent
 
+    tools {
+        maven 'maven 399' // Use the name of the Maven version configured in Jenkins
+    }
     stages{
         stage('Build') {
                     steps {
