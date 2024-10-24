@@ -18,14 +18,12 @@ pipeline {
                         // Add your build commands here, using the input version if needed
                         // Example: sh "mvn clean package -Dversion=${billAccountId}"
                     }
-                }
 
-        stage('Do Something with Input 1') {
-            steps{
-                script{
-                    sh "mvn clean test -Dtype="${billAccountId}
+                    steps{
+                        script{
+                            sh "mvn clean test -Dtype="${billAccountId}
+                        }
+                    }
                 }
-            }
-        }
     }
 }
