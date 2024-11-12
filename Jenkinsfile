@@ -7,42 +7,56 @@ pipeline {
         maven 'maven 399' // Use the name of the Maven version configured in Jenkins
     }
 
-    stages{
+    stages {
+        stage('test multiple inputs') {
+            steps {
+                script {
+                    def userInputs = input(
+                            id: 'UserInputs', message: 'Provide the following inputs',
+                            parameters: [
+                                    string(name: 'ENVIRONMENT', defaultValue: 'dev', description: 'Select the environment'),
+                                    choice(name: 'DEPLOY_TYPE', choices: ['Full', 'Partial'], description: 'Type of deployment'),
+                                    booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: 'Skip tests?')
+                            ]
+                    )
+                }
+            }
+        }
         stage('Select Scenario') {
-                    steps {
-                        script {
-                            def scenarioType = input message: 'Select bill account id',
-                                                     parameters: [choice(choices: ['Bill Run', 'Payex Files'],
-                                                     description: 'Please select the scenario you want to run',
-                                                     name: 'BILL_SCENARIO')]
-                            scenario = scenarioType;
-                        }
-                    }
+            steps {
+                script {
+                    def scenarioType = input message: 'Select bill account id',
+                            parameters: [choice(choices: ['Bill Run', 'Payex Files'],
+                                    description: 'Please select the scenario you want to run',
+                                    name: 'BILL_SCENARIO')]
+                    scenario = scenarioType;
+                }
+            }
         };
         stage('Scenario Parameters') {
             steps {
                 script {
-                    switch (scenario){
+                    switch (scenario) {
                         case "Bill Run":
                             echo 'Bill Run selected'
                             def billAccountId = input message: 'Enter bill account id',
-                                                      parameters: [string(defaultValue: '123456789',
-                                                      description: 'Please enter the bill account id to run billing for',
-                                                      name: 'BILL_ACC_ID')]
+                                    parameters: [string(defaultValue: '123456789',
+                                            description: 'Please enter the bill account id to run billing for',
+                                            name: 'BILL_ACC_ID')]
 
                             echo "Building version ${billAccountId}"
                             sh "mvn clean test -Dtestng.suiteXmlFile=all-ng.xml"
-                        break
+                            break
                         case "Payex Files":
                             echo 'Payex Selected selected'
                             def billRunId = input message: 'Enter bill run id',
-                                                  parameters: [string(defaultValue: 'XXXXXXXXX',
-                                                  description: 'Please enter the bill run id to generate files for',
-                                                  name: 'BILL_RUN_ID')]
+                                    parameters: [string(defaultValue: 'XXXXXXXXX',
+                                            description: 'Please enter the bill run id to generate files for',
+                                            name: 'BILL_RUN_ID')]
 
                             echo "Building version ${billRunId}"
                             sh "mvn clean test -Dtestng.suiteXmlFile=testng.xml -DbillRun=${billRunId}"
-                        break
+                            break
                         default:
                             echo 'Selected scenario is: ' + scenario
                             error "No scenario selected or unknown scenario type issued"
