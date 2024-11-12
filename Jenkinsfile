@@ -1,4 +1,7 @@
 def scenario = "NONE";
+def testEnv = "NONE";
+def cucumberTags = "NONE";
+def testParams = "NONE";
 
 pipeline {
     agent any  // This specifies that Jenkins can run the pipeline on any available agent
@@ -8,20 +11,6 @@ pipeline {
     }
 
     stages {
-        stage('test multiple inputs') {
-            steps {
-                script {
-                    def userInputs = input(
-                            id: 'UserInputs', message: 'Provide the following inputs',
-                            parameters: [
-                                    string(name: 'ENVIRONMENT', defaultValue: 'dev', description: 'Select the environment'),
-                                    choice(name: 'DEPLOY_TYPE', choices: ['Full', 'Partial'], description: 'Type of deployment'),
-                                    booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: 'Skip tests?')
-                            ]
-                    )
-                }
-            }
-        }
         stage('Select Scenario') {
             steps {
                 script {
@@ -32,30 +21,32 @@ pipeline {
                     scenario = scenarioType;
                 }
             }
-        };
-        stage('Scenario Parameters') {
+        }
+        stage('Set Test Parameters') {
             steps {
                 script {
                     switch (scenario) {
                         case "Bill Run":
-                            echo 'Bill Run selected'
-                            def billAccountId = input message: 'Enter bill account id',
-                                    parameters: [string(defaultValue: '123456789',
-                                            description: 'Please enter the bill account id to run billing for',
-                                            name: 'BILL_ACC_ID')]
-
-                            echo "Building version ${billAccountId}"
-                            sh "mvn clean test -Dtestng.suiteXmlFile=all-ng.xml"
+                            def billRunInputs = input(
+                                    id: 'UserInputs', message: 'Provide the following inputs', parameters: [
+                                    string(name: 'BILL_ACC_ID', defaultValue: '', description: 'bill account id'),
+                                    string(name: 'BILLING_PERIOD', defaultValue: '', description: 'Billing period YYYYMM'),
+                                    string(name: 'MESSAGE', defaultValue: '', description: 'Bill run message')
+                            ]
+                            )
+                            cucumberTags = '-Dcucumber.filter.tags=@BillRun'
+                            testParams =
+                                    "-DbillAccountId=${billRunInputs['BILL_ACC_ID']}" +
+                                    " -DbillPeriod=${billRunInputs['BILLING_PERIOD']}" +
+                                    " -Dmessage=${billRunInputs['MESSAGE']}"
                             break
                         case "Payex Files":
-                            echo 'Payex Selected selected'
                             def billRunId = input message: 'Enter bill run id',
                                     parameters: [string(defaultValue: 'XXXXXXXXX',
                                             description: 'Please enter the bill run id to generate files for',
                                             name: 'BILL_RUN_ID')]
-
-                            echo "Building version ${billRunId}"
-                            sh "mvn clean test -Dtestng.suiteXmlFile=testng.xml -DbillRun=${billRunId}"
+                            cucumberTags = '-Dcucumber.filter.tags=@PayexFiles'
+                            testParams = "-DbillRunId=${billRunId}"
                             break
                         default:
                             echo 'Selected scenario is: ' + scenario
@@ -63,6 +54,17 @@ pipeline {
                     }
                 }
             }
-        };
+        }
+        stage('Select Env') {
+            steps {
+                script {
+                    def envValue = input message: 'SELECT ENV',
+                            parameters: [choice(choices: ['DEV', 'SIT', 'SAT'],
+                                    description: 'Select your env',
+                                    name: 'ENV_VALUE')]
+                    testEnv = " -Denv=" + envValue;
+                }
+            }
+        }
     }
 }
